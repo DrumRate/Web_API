@@ -12,12 +12,12 @@ namespace CRUD.Models.FactoryDbContext
         {
         }
 
-        protected FactoryDbContext()
+        public FactoryDbContext()
         {
         }
 
-        public DbSet<Factory> Factories { get; set; }
-        public DbSet<Unit> Units{ get; set; }
-        public DbSet<Tank> Tanks { get; set; }
+        public DbSet<Factory> Factory { get; set; }
+        public DbSet<Unit> Unit { get; set; }
+        public DbSet<Tank> Tank { get; set; }
     }
 }

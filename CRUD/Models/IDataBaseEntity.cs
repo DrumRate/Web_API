@@ -7,7 +7,7 @@ namespace CRUD
 {
     interface IDataBaseEntity
     {
-        int ID {get; set;}
+        int Id {get; set;}
         string Name { get; set; }
 
         string ToString();

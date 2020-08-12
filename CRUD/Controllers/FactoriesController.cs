@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CRUD.Models.FactoryDbContext;
+using CRUD.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -15,62 +16,46 @@ namespace CRUD.Controllers
     [ApiController]
     public class FactoriesController : ControllerBase
     {
-        private readonly FactoryDbContext context;
+        readonly FactoryRepository factoryRepository;
 
         public FactoriesController(FactoryDbContext context)
         {
-            this.context = context;
+            factoryRepository = new FactoryRepository(context);
         }
 
         // GET: api/<ValuesController>
         [HttpGet]
         public IEnumerable<Factory> Get()
         {
-            return context.Factories.ToList();
+            return factoryRepository.GetAll();
         }
 
         // GET api/<ValuesController>/5
         [HttpGet("read/{id}")]
         public string Get(int id)
         {
-            var factory = context.Factories.Single(f => f.ID == id);
-            return JsonConvert.SerializeObject(factory);
+            return factoryRepository.Get(id);
         }
 
         // POST api/<ValuesController>
         [HttpPost]
         public string Post([FromBody] string stringFactory)
         {
-            var factory = JsonConvert.DeserializeObject<Factory>(stringFactory);
-            context.Factories.Add(factory);
-            context.SaveChanges();
-            factory.JSON_Id = factory.ID;
-            context.Entry(factory).State = EntityState.Modified;
-            context.SaveChanges();
-            return JsonConvert.SerializeObject(factory);
+            return factoryRepository.Create(stringFactory);
         }
 
         // PUT api/<ValuesController>/5
         [HttpPut("{id}")]
         public string Put(int id, [FromBody] string stringFactory)
         {
-            var factory = JsonConvert.DeserializeObject<Factory>(stringFactory);
-            var dbFactory = context.Factories.Single(f => f.ID == id);
-            dbFactory.Name = factory.Name;
-            dbFactory.Desc = factory.Desc;
-            dbFactory.JSON_Id = factory.JSON_Id;
-            context.Entry(dbFactory).State = EntityState.Modified;
-            context.SaveChanges();
-            return JsonConvert.SerializeObject(factory);
+            return factoryRepository.Update(id, stringFactory);
         }
 
         // DELETE api/<ValuesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public bool Delete(int id)
         {
-            var factory = context.Factories.Single(f => f.ID == id);
-            context.Factories.Remove(factory);
-            context.SaveChanges();
+            return factoryRepository.Delete(id);
         }
     }
 }

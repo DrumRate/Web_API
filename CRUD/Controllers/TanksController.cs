@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CRUD.Models.FactoryDbContext;
+using CRUD.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -15,61 +16,46 @@ namespace CRUD.Controllers
     [ApiController]
     public class TanksController : ControllerBase
     {
-        private readonly FactoryDbContext context;
+        readonly TankRepository tankRepository;
 
         public TanksController(FactoryDbContext context)
         {
-            this.context = context;
+            tankRepository = new TankRepository(context);
         }
+
         // GET: api/<ValuesController>
         [HttpGet]
-       public IEnumerable<Tank> Get()
+        public IEnumerable<Tank> Get()
         {
-            return context.Tanks.ToList();
+            return tankRepository.GetAll();
         }
 
         // GET api/<ValuesController>/5
-        [HttpGet("{id}")]
+        [HttpGet("read/{id}")]
         public string Get(int id)
         {
-            var tank = context.Tanks.Single(f => f.ID == id);
-            return JsonConvert.SerializeObject(tank);
+            return tankRepository.Get(id);
         }
 
         // POST api/<ValuesController>
         [HttpPost]
         public string Post([FromBody] string stringTank)
         {
-            var tank = JsonConvert.DeserializeObject<Tank>(stringTank);
-            context.Tanks.Add(tank);
-            context.SaveChanges();
-            context.Entry(tank).State = EntityState.Modified;
-            context.SaveChanges();
-            return JsonConvert.SerializeObject(tank);
+            return tankRepository.Create(stringTank);
         }
 
         // PUT api/<ValuesController>/5
         [HttpPut("{id}")]
         public string Put(int id, [FromBody] string stringTank)
         {
-            var tank = JsonConvert.DeserializeObject<Tank>(stringTank);
-            var dbTank = context.Tanks.Single(t => t.ID == id);
-            dbTank.Name = tank.Name;
-            dbTank.MaxVolume = tank.MaxVolume;
-            dbTank.Volume = tank.Volume;
-            dbTank.UnitId = tank.UnitId;
-            context.Entry(dbTank).State = EntityState.Modified;
-            context.SaveChanges();
-            return JsonConvert.SerializeObject(tank);
+            return tankRepository.Update(id, stringTank);
         }
 
         // DELETE api/<ValuesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public bool Delete(int id)
         {
-            var tank = context.Tanks.Single(t => t.ID == id);
-            context.Tanks.Remove(tank);
-            context.SaveChanges();
+            return tankRepository.Delete(id);
         }
     }
 }
