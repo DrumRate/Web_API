@@ -19,5 +19,6 @@ namespace CRUD
         public float MaxVolume { get; set; }
         [CustomDescription("Id установки")]
         public int UnitId { get; set; }
+        public Unit Unit { get; set; }
     }
 }

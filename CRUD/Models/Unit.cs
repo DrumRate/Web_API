@@ -13,6 +13,7 @@ namespace CRUD
         public string Name { get; set; }
         [CustomDescription("ID завода")]
         public int FactoryId { get; set; }
+        public Factory Factory { get; set; }
 
     }
 }

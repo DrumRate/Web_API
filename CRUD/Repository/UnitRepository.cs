@@ -18,7 +18,7 @@ namespace CRUD.Repository
         }
         public IEnumerable<Unit> GetAll()
         {
-            List<Unit> units = context.Unit.ToList();
+            List<Unit> units = context.Unit.Include(f => f.Factory).ToList();
             return units;
         }
         public string Get(int? id)

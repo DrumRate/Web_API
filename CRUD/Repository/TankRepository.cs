@@ -19,7 +19,7 @@ namespace CRUD.Repository
 
         public IEnumerable<Tank> GetAll()
         {
-            List<Tank> tanks = context.Tank.ToList();
+            List<Tank> tanks = context.Tank.Include(u => u.Unit.Factory).ToList();
             return tanks;
         }
         public string Get(int? id)
