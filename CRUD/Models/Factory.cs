@@ -1,12 +1,15 @@
 ﻿using System;
+using AttributionLib;
 
 namespace CRUD
 {
     public class Factory : IDataBaseEntity
     {
-        public int ID { get; set; }
+        [CustomDescription("ID")]
+        public int Id { get; set; }
+        [CustomDescription("Название фабрики")]
         public string Name { get; set; }
-        public string Desc{ get; set; }
-        public int JSON_Id { get; set; }
+        [CustomDescription("Описание фабрики")]
+        public string Description { get; set; }
     }
 }

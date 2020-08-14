@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AttributionLib;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,10 +7,13 @@ namespace CRUD
 {
     public class Unit : IDataBaseEntity
     {
-
-        public int ID { get; set; }
+        [CustomDescription("ID")]
+        public int Id { get; set; }
+        [CustomDescription("Название установки")]
         public string Name { get; set; }
-        public Factory factoryId { get; set; }
+        [CustomDescription("ID завода")]
+        public int FactoryId { get; set; }
+        public Factory Factory { get; set; }
 
     }
 }
