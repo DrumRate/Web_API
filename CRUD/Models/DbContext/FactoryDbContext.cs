@@ -16,8 +16,8 @@ namespace CRUD.Models.FactoryDbContext
         {
         }
 
-        public DbSet<Factory> Factory { get; set; }
-        public DbSet<Unit> Unit { get; set; }
-        public DbSet<Tank> Tank { get; set; }
+        public DbSet<Factory> Factories { get; set; }
+        public DbSet<Unit> Units { get; set; }
+        public DbSet<Tank> Tanks { get; set; }
     }
 }

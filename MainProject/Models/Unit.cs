@@ -17,9 +17,9 @@ namespace MainProject
             FactoryId = factoryId;
         }
 
-        public string ToString()
-        {
-            return $"ID = {ID}, Название = {Name}";
-        }
+        //public string ToString()
+        //{
+        //    return $"ID = {ID}, Название = {Name}";
+        //}
     }
 }

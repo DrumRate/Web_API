@@ -1,4 +1,7 @@
-﻿using CRUD.Models.FactoryDbContext;
+﻿using AutoMapper;
+using CRUD.DTO;
+using CRUD.Models.FactoryDbContext;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
@@ -10,50 +13,48 @@ namespace CRUD.Repository
 {
     public class TankRepository : IFactoryRepository<Tank>
     {
-        private readonly FactoryDbContext context;
+        private readonly FactoryDbContext _context;
 
         public TankRepository(FactoryDbContext context)
         {
-            this.context = context;
+            this._context = context;
         }
 
-        public IEnumerable<Tank> GetAll()
+        public async Task<IEnumerable<Tank>> GetAll()
         {
-            List<Tank> tanks = context.Tank.Include(u => u.Unit.Factory).ToList();
+            List<Tank> tanks = await (from t in _context.Tanks 
+                                      join u in _context.Units on t.UnitId equals u.Id
+                                      join f in _context.Factories on u.FactoryId equals f.Id
+                                      select new Tank { Id = t.Id, MaxVolume = t.MaxVolume, Name = t.Name, Volume = t.Volume, UnitId = t.UnitId} ).ToListAsync();
             return tanks;
         }
-        public string Get(int? id)
+        public async Task<Tank> Get(int? id)
         {
-            var tank = context.Tank.Single(f => f.Id == id);
-            return JsonConvert.SerializeObject(tank);
+            return await _context.Tanks.FirstOrDefaultAsync(f => f.Id == id);
         }
-        public string Create(string stringTank)
+        public async Task<Tank> Create(Tank tank)
         {
-            Tank tank = JsonConvert.DeserializeObject<Tank>(stringTank);
-            context.Tank.Add(tank);
-            context.SaveChanges();
-            context.Entry(tank).State = EntityState.Modified;
-            context.SaveChanges();
-            return JsonConvert.SerializeObject(tank);
+            await _context.Tanks.AddAsync(tank);
+            await _context.SaveChangesAsync();
+            return tank;
         }
 
-        public string Update(int id, string stringTank)
+        public async Task<Tank> Update(int id, Tank tank)
         {
-            var tank = JsonConvert.DeserializeObject<Tank>(stringTank);
-            var dbTank = context.Tank.Single(f => f.Id == id);
+            var dbTank = await _context.Tanks.FirstOrDefaultAsync(f => f.Id == id);
             dbTank.Name = tank.Name;
             dbTank.Volume = tank.Volume;
             dbTank.MaxVolume = tank.MaxVolume;
-            context.Entry(dbTank).State = EntityState.Modified;
-            context.SaveChanges();
-            return JsonConvert.SerializeObject(tank);
+            //dbTank.FactoryName = tank.FactoryName;
+            await _context.SaveChangesAsync();
+            return tank;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            var tank = context.Tank.Single(f => f.Id == id);
-            context.Tank.Remove(tank);
-            context.SaveChanges();
+            Tank tank = await _context.Tanks.FirstOrDefaultAsync(f => f.Id == id);
+            _context.Tanks.Remove(tank);
+            await _context.SaveChangesAsync();
             return true;
         }
 

@@ -17,8 +17,8 @@ namespace CRUD
         [CustomDescription("Максмальный объем")]
         [AllowedRange(200, 1000)]
         public float MaxVolume { get; set; }
+        //public string FactoryName { get; set; }
         [CustomDescription("Id установки")]
         public int UnitId { get; set; }
-        public Unit Unit { get; set; }
     }
 }
