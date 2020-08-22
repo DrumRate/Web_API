@@ -10,47 +10,41 @@ namespace CRUD.Repository
 {
     public class UnitRepository : IFactoryRepository<Unit>
     {
-        private readonly FactoryDbContext context;
+        private readonly FactoryDbContext _context;
 
         public UnitRepository(FactoryDbContext context)
         {
-            this.context = context;
+            this._context = context;
         }
-        public IEnumerable<Unit> GetAll()
+        public async Task<IEnumerable<Unit>> GetAll()
         {
-            List<Unit> units = context.Unit.Include(f => f.Factory).ToList();
+            List<Unit> units = await _context.Units.Include(f => f.Factory).ToListAsync();
             return units;
         }
-        public string Get(int? id)
+        public async Task<Unit> Get(int? id)
         {
-            var unit = context.Unit.Single(f => f.Id == id);
-            return JsonConvert.SerializeObject(unit);
+            return await _context.Units.FirstOrDefaultAsync(f => f.Id == id);
         }
-        public string Create(string stringUnit)
+        public async Task<Unit> Create(Unit unit)
         {
-            Unit unit = JsonConvert.DeserializeObject<Unit>(stringUnit);
-            context.Unit.Add(unit);
-            context.SaveChanges();
-            context.Entry(unit).State = EntityState.Modified;
-            context.SaveChanges();
-            return JsonConvert.SerializeObject(unit);
+            await _context.Units.AddAsync(unit);
+            await _context.SaveChangesAsync();
+            return unit;
         }
 
-        public string Update(int id, string stringUnit)
+        public async Task<Unit> Update(int id, Unit unit)
         {
-            var unit = JsonConvert.DeserializeObject<Unit>(stringUnit);
-            var dbUnit = context.Unit.Single(f => f.Id == id);
+            var dbUnit = await _context.Units.FirstOrDefaultAsync(f => f.Id == id);
             dbUnit.Name = unit.Name;
-            context.Entry(dbUnit).State = EntityState.Modified;
-            context.SaveChanges();
-            return JsonConvert.SerializeObject(unit);
+            await _context.SaveChangesAsync();
+            return unit;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            var unit = context.Unit.Single(f => f.Id == id);
-            context.Unit.Remove(unit);
-            context.SaveChanges();
+            Unit unit = await _context.Units.FirstOrDefaultAsync(f => f.Id == id);
+            _context.Units.Remove(unit);
+            await _context.SaveChangesAsync();
             return true;
         }
 

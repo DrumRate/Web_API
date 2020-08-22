@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AttributionLib;
 
 namespace CRUD
@@ -11,5 +12,7 @@ namespace CRUD
         public string Name { get; set; }
         [CustomDescription("Описание фабрики")]
         public string Description { get; set; }
+        //[CustomDescription("Имеющиеся установки")]
+        //public List<Unit> Units { get; set; }   
     }
 }
