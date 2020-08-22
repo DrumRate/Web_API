@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainProject", "MainProject\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iterator", "Iterator\Iterator.csproj", "{20486964-D5BA-476A-A775-8D4FA12FD033}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttributionLib", "AttributionLib\AttributionLib.csproj", "{A4065F9B-CF44-49DF-89CD-1756A57BCC2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AttributionLib", "AttributionLib\AttributionLib.csproj", "{A4065F9B-CF44-49DF-89CD-1756A57BCC2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPIEvent", "WebAPIEvent\WebAPIEvent.csproj", "{B8AF8E7F-5404-4E9A-A3EC-9CEEB287A046}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{A4065F9B-CF44-49DF-89CD-1756A57BCC2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4065F9B-CF44-49DF-89CD-1756A57BCC2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4065F9B-CF44-49DF-89CD-1756A57BCC2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8AF8E7F-5404-4E9A-A3EC-9CEEB287A046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8AF8E7F-5404-4E9A-A3EC-9CEEB287A046}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8AF8E7F-5404-4E9A-A3EC-9CEEB287A046}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8AF8E7F-5404-4E9A-A3EC-9CEEB287A046}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

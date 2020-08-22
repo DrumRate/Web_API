@@ -14,7 +14,7 @@ namespace CRUD.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.6")
+                .HasAnnotation("ProductVersion", "3.1.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -33,7 +33,7 @@ namespace CRUD.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Factory");
+                    b.ToTable("Factories");
                 });
 
             modelBuilder.Entity("CRUD.Tank", b =>
@@ -57,7 +57,7 @@ namespace CRUD.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tank");
+                    b.ToTable("Tanks");
                 });
 
             modelBuilder.Entity("CRUD.Unit", b =>
@@ -75,7 +75,18 @@ namespace CRUD.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Unit");
+                    b.HasIndex("FactoryId");
+
+                    b.ToTable("Units");
+                });
+
+            modelBuilder.Entity("CRUD.Unit", b =>
+                {
+                    b.HasOne("CRUD.Factory", "Factory")
+                        .WithMany()
+                        .HasForeignKey("FactoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
