@@ -71,11 +71,5 @@ namespace CRUD.Controllers
         {
             return await _factoryRepository.Delete(id);
         }
-
-        [HttpPost]
-        public string TestCustomMethod()
-        {
-            return "Залупа коня Альберта";
-        }
     }
 }

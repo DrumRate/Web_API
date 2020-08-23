@@ -43,10 +43,10 @@ namespace WebAPIEvent.Controllers
         {
             var dirInfo = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent?.Parent?.Parent;
             string path = Path.Combine(dirInfo.FullName, "events.json");
-            List<JObject> events = JsonConvert.DeserializeObject<List<JObject>>(System.IO.File.ReadAllText(path));
+            List<JObject> events =await JsonConvert.DeserializeObject<List<JObject>>(System.IO.File.ReadAllTextAsync(path));
             var filteredEvents = events.Where(u => ids.Contains(u.Value<int>("Id")));
             //JArray array = new JArray(filteredEvents.ToArray());
-            var result = JsonConvert.SerializeObject(filteredEvents);
+            var result = JsonConvert.SerializeObject(filteredEvents, Formatting.Indented);
             return Ok(result);
         }
 
