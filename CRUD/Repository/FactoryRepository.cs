@@ -50,10 +50,19 @@ namespace CRUD.Repository
 
         public async Task<bool> Delete(int id)
         {
-            Factory factory = await _context.Factories.FirstOrDefaultAsync(f => f.Id == id);
-            _context.Factories.Remove(factory);
-            await _context.SaveChangesAsync();
-            return true;
+            try
+            {
+                Factory factory = await _context.Factories.FirstOrDefaultAsync(f => f.Id == id);
+                _context.Factories.Remove(factory);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+            
         }
 
     }

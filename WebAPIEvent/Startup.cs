@@ -39,7 +39,7 @@ namespace WebAPIEvent
                     {
                         Name = "Alex Pelipenko",
                         Email = string.Empty,
-                        Url = new Uri("vk.com/id120131441"),
+                        //Url = new Uri("www.example.com"),
                     },
                     License = new OpenApiLicense
                     {

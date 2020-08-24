@@ -18,7 +18,7 @@ namespace CRUD.Repository
         }
         public async Task<IEnumerable<Unit>> GetAll()
         {
-            List<Unit> units = await _context.Units.Include(f => f.Factory).ToListAsync();
+            List<Unit> units = await _context.Units.Include(t => t.Tank).ToListAsync();
             return units;
         }
         public async Task<Unit> Get(int? id)

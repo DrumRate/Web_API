@@ -30,10 +30,10 @@ namespace CRUD.Controllers
 
         // GET: api/<ValuesController>
         [HttpGet]
-        public Task<IEnumerable<Factory>> GetAll()
+        public async Task<IEnumerable<Factory>> GetAll()
         {
  
-            return _factoryRepository.GetAll();
+            return await _factoryRepository.GetAll();
         }
 
         // GET api/<ValuesController>/5
@@ -49,7 +49,8 @@ namespace CRUD.Controllers
         {
             var factory = _mapper.Map<Factory>(factoryDto);
             var validationRes = _validator.Validate(factory);
-            if (!validationRes.IsValid) return BadRequest(new { errors = validationRes.Errors });
+            if (!validationRes.IsValid) 
+                return BadRequest(new { errors = validationRes.Errors });
             var res = await _factoryRepository.Create(factory);
             return CreatedAtAction(nameof(Get), new { Id = factory.Id }, factory);
         }
