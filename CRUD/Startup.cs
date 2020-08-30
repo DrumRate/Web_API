@@ -12,6 +12,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Collections.Generic;
+using CRUD.Options;
 
 namespace CRUD
 {
@@ -27,7 +32,21 @@ namespace CRUD
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<FactoryDbContext>(options => options.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Factories;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
+            services.Configure<UnitOptions>(Configuration.GetSection("UnitOptions"));
+            services.AddDbContext<FactoryDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DataConnect")));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+           .AddJwtBearer(options =>
+           {
+               options.TokenValidationParameters = new TokenValidationParameters
+               {
+                   ValidateIssuerSigningKey = true,
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetSection("AppSettings:JwtSecret").Value)),
+                   ValidateIssuer = false,
+                   ValidateAudience = false,
+                   ValidateLifetime = true
+               };
+           });
             services.AddControllers();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -36,27 +55,40 @@ namespace CRUD
             services.AddTransient<IFactoryRepository<Unit>, UnitRepository>();
             services.AddTransient<IFactoryRepository<Tank>, TankRepository>();
             services.AddHostedService<TankService>();
-            services.AddSwaggerGen(c =>
+            services.AddHttpClient("events", c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
+                c.BaseAddress = new Uri("https://localhost:44358/api/events");
+            });
+            services.AddHostedService<EventSyncService>();
+            services.AddSwaggerGen(c => {
+
+                // ќбъ€вл€ем новую схему авторизации
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Version = "v1",
-                    Title = "Education project",
-                    Description = "A simple ASP.NET Core Web API",
-                    TermsOfService = new Uri("https://example.com/terms"),
-                    Contact = new OpenApiContact
+                    Description = "JWT Authorization via Bearer scheme",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    // ”казываем тип и схему авторизации
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer"
+                });
+
+                // —оздаем референс на свежесозданную схему
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement{
                     {
-                        Name = "Shayne Boyer",
-                        Email = string.Empty,
-                        Url = new Uri("https://twitter.com/spboyer"),
-                    },
-                    License = new OpenApiLicense
-                    {
-                        Name = "Use under LICX",
-                        Url = new Uri("https://example.com/license"),
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new List<String>()
                     }
                 });
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,10 +115,11 @@ namespace CRUD
 
             app.UseHttpsRedirection();
 
-            
+
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

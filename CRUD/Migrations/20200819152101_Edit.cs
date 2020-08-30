@@ -8,26 +8,26 @@ namespace CRUD.Migrations
         {
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Unit",
-                table: "Unit");
+                table: "Units");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Tank",
-                table: "Tank");
+                table: "Tanks");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Factory",
-                table: "Factory");
+                table: "Factories");
 
             migrationBuilder.RenameTable(
-                name: "Unit",
+                name: "Units",
                 newName: "Units");
 
             migrationBuilder.RenameTable(
-                name: "Tank",
+                name: "Tanks",
                 newName: "Tanks");
 
             migrationBuilder.RenameTable(
-                name: "Factory",
+                name: "Factories",
                 newName: "Factories");
 
             migrationBuilder.AddPrimaryKey(
@@ -83,11 +83,11 @@ namespace CRUD.Migrations
 
             migrationBuilder.RenameTable(
                 name: "Units",
-                newName: "Unit");
+                newName: "Units");
 
             migrationBuilder.RenameTable(
                 name: "Tanks",
-                newName: "Tank");
+                newName: "Tanks");
 
             migrationBuilder.RenameTable(
                 name: "Factories",
@@ -95,17 +95,17 @@ namespace CRUD.Migrations
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Unit",
-                table: "Unit",
+                table: "Units",
                 column: "Id");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Tank",
-                table: "Tank",
+                table: "Tanks",
                 column: "Id");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Factory",
-                table: "Factory",
+                table: "Factories",
                 column: "Id");
         }
     }
