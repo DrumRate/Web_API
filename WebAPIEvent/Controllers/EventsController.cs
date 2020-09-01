@@ -27,27 +27,70 @@ namespace WebAPIEvent.Controllers
         //api/events/keys?unitId=1&take=3&skip=3
         [HttpGet]
         [Route("keys")]
-        public async Task<ActionResult> GetEventIdsAsync(int unitId, int take, int skip)
+        public async Task<IEnumerable<int>> GetEventIds(int unitId, int take, int skip)
         {
-            var dirInfo = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent?.Parent?.Parent;
-            string path = Path.Combine(dirInfo.FullName, "events.json");
-            List<JObject> events = JsonConvert.DeserializeObject<List<JObject>>(await System.IO.File.ReadAllTextAsync(path));
-            var filteredEvents = events.Where(u => u.Value<int>("UnitId") == unitId).Skip(skip).Take(take);
-            JArray array = new JArray(filteredEvents.Select(s => s.Value<int>("Id")).ToArray());
-            return Ok(array.ToString());//array.ToString();
+            using (var streamReader = new StreamReader("events.json"))
+            using (var jsonTextReader = new JsonTextReader(streamReader))
+            {
+                var count = 0;
+                var skipCount = 0;
+                var eventIds = new List<int>();
+                while (count < take && await jsonTextReader.ReadAsync())
+                {
+                    // Чтобы корректно считать объект из массива JSON,
+                    // дадим знать ридеру, что читаем только тогда, когда 
+                    // TokenType равен началу объекта
+                    if (jsonTextReader.TokenType == JsonToken.StartObject)
+                    {
+                        var currentObject = (JObject)await JToken.ReadFromAsync(jsonTextReader);
+                        var unitIdFromJson = currentObject["UnitId"].Value<int>();
+                        if (unitIdFromJson != unitId) continue;
+
+                        var id = currentObject["Id"].Value<int>();
+                        // В представленном events.json Id событий идут подряд,
+                        // а не привязываются к номеру установки, поэтому
+                        // при пропусках ориентируемся на счетчик
+                        if (skipCount < skip)
+                        {
+                            skipCount++;
+                            continue;
+                        }
+
+                        eventIds.Add(id);
+                        count++;
+                    }
+                }
+                return eventIds;
+            }
         }
 
         // POST api/<EventsController>
         [HttpPost]
-        public async Task<ActionResult<string>> Post([FromBody] int[] ids)
+        public async IAsyncEnumerable<Event> GetEvents(int[] eventIds)
         {
-            var dirInfo = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent?.Parent?.Parent;
-            string path = Path.Combine(dirInfo.FullName, "events.json");
-            List<JObject> events = JsonConvert.DeserializeObject<List<JObject>>(await System.IO.File.ReadAllTextAsync(path));
-            var filteredEvents = events.Where(u => ids.Contains(u.Value<int>("Id")));
-            //JArray array = new JArray(filteredEvents.ToArray());
-            var result = JsonConvert.SerializeObject(filteredEvents, Formatting.Indented);
-            return Ok(result);
+            using (var streamReader = new StreamReader("events.json"))
+            using (var jsonReader = new JsonTextReader(streamReader))
+            {
+                foreach (var id in eventIds)
+                {
+                    var unitEvent = new Event();
+                    while (await jsonReader.ReadAsync())
+                    {
+                        if (jsonReader.TokenType == JsonToken.StartObject)
+                        {
+                            // Немножко другой способ вытащить Id из текущего объекта
+                            JToken currentToken = JObject.Load(jsonReader);
+                            if ((int)currentToken["Id"] == id)
+                            {
+                                unitEvent = currentToken.ToObject<Event>();
+                                break;
+                            }
+                        }
+                    }
+                    yield return unitEvent;
+                }
+            }
+
         }
 
         // PUT api/<EventsController>/5

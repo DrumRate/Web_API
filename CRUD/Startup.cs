@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Collections.Generic;
 using CRUD.Options;
+using Microsoft.Data.SqlClient;
 
 namespace CRUD
 {
@@ -34,6 +35,9 @@ namespace CRUD
         {
             services.Configure<UnitOptions>(Configuration.GetSection("UnitOptions"));
             services.AddDbContext<FactoryDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DataConnect")));
+            SqlCommand command = new SqlCommand();
+            // Setting command timeout to 1 second  
+            command.CommandTimeout = 60;
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
            .AddJwtBearer(options =>

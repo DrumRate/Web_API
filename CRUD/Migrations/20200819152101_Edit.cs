@@ -7,15 +7,15 @@ namespace CRUD.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropPrimaryKey(
-                name: "PK_Unit",
+                name: "PK_Units",
                 table: "Units");
 
             migrationBuilder.DropPrimaryKey(
-                name: "PK_Tank",
+                name: "PK_Tanks",
                 table: "Tanks");
 
             migrationBuilder.DropPrimaryKey(
-                name: "PK_Factory",
+                name: "PK_Factories",
                 table: "Factories");
 
             migrationBuilder.RenameTable(
@@ -91,7 +91,7 @@ namespace CRUD.Migrations
 
             migrationBuilder.RenameTable(
                 name: "Factories",
-                newName: "Factory");
+                newName: "Factories");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Unit",

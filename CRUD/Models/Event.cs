@@ -7,6 +7,7 @@ namespace CRUD.Models
 {
     public class Event
     {
+        internal readonly int EventId;
         public int Id { get; set; }
         public bool IsActive { get; set; }
         public double StorageValue { get; set; }
