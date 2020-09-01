@@ -124,28 +124,37 @@ namespace CRUD.Services
         }
         private async Task SyncNewUnitEvents(int id)
         {
-            using var scope = Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<FactoryDbContext>();
-            var takeCount = _options.TakeCount;
-            var skipCount = await context.Events.MaxAsync(e => (int?)e.Id) ?? 0;
-
-
-            var eventIds = await GetEventIds(id, takeCount, skipCount);
-
-            while (eventIds.Any())
+            try
             {
-                var events = await GetEvents(eventIds);
+                using var scope = Services.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<FactoryDbContext>();
+                var takeCount = _options.TakeCount;
+                var skipCount = await context.Events.MaxAsync(e => (int?)e.Id) ?? 0;
 
-                await context.BulkInsertAsync<Event>(events);
-                _logger.LogDebug($"Записано {events.Count()} новых ивентов в БД");
 
-                _logger.LogDebug($"Пачка ивентов длв установки {id} записана в БД.");
+                var eventIds = await GetEventIds(id, takeCount, skipCount);
 
-                skipCount += eventIds.Count();
-                eventIds = await GetEventIds(id, takeCount, skipCount);
+                while (eventIds.Any())
+                {
+                    var events = await GetEvents(eventIds);
 
+                    await context.BulkInsertAsync<Event>(events);
+                    _logger.LogDebug($"Записано {events.Count()} новых ивентов в БД");
+
+                    _logger.LogDebug($"Пачка ивентов длв установки {id} записана в БД.");
+
+                    skipCount += eventIds.Count();
+                    eventIds = await GetEventIds(id, takeCount, skipCount);
+
+                }
+                _logger.LogInformation("Все новые ивенты были записаны");
             }
-            _logger.LogInformation("Все новые ивенты были записаны");
+            catch (TaskCanceledException ex)
+            {
+
+                Console.WriteLine("Таска отменилась" + ex.Message);
+            }
+            
         }
 
         private async Task<IList<int>> GetEventIds(int id, int take, int skip)

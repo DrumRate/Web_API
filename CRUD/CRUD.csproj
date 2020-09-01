@@ -45,6 +45,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.5.1" />
     <PackageReference Include="System.Net.Http.Formatting.Extension" Version="5.2.3" />
+    <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
