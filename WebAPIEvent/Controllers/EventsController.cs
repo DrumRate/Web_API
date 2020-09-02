@@ -37,9 +37,6 @@ namespace WebAPIEvent.Controllers
                 var eventIds = new List<int>();
                 while (count < take && await jsonTextReader.ReadAsync())
                 {
-                    // Чтобы корректно считать объект из массива JSON,
-                    // дадим знать ридеру, что читаем только тогда, когда 
-                    // TokenType равен началу объекта
                     if (jsonTextReader.TokenType == JsonToken.StartObject)
                     {
                         var currentObject = (JObject)await JToken.ReadFromAsync(jsonTextReader);
@@ -47,9 +44,6 @@ namespace WebAPIEvent.Controllers
                         if (unitIdFromJson != unitId) continue;
 
                         var id = currentObject["Id"].Value<int>();
-                        // В представленном events.json Id событий идут подряд,
-                        // а не привязываются к номеру установки, поэтому
-                        // при пропусках ориентируемся на счетчик
                         if (skipCount < skip)
                         {
                             skipCount++;
@@ -78,7 +72,6 @@ namespace WebAPIEvent.Controllers
                     {
                         if (jsonReader.TokenType == JsonToken.StartObject)
                         {
-                            // Немножко другой способ вытащить Id из текущего объекта
                             JToken currentToken = JObject.Load(jsonReader);
                             if ((int)currentToken["Id"] == id)
                             {
