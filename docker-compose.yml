@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+    ApiHello:
+        image: dockerhello
+        container_name: ApiHello
+        build:
+            context: .
+            dockerfile: ./DHello/Dockerfile
+        ports:
+            - "5101:80"
+        environment:
+            - API_URL=http://ApiWorld
+    ApiWorld:
+        image: dockerworld
+        container_name: ApiWorld
+        build:
+            context: .
+            dockerfile: ./DWorld/Dockerfile
+        ports:
+            - "5100:80"
