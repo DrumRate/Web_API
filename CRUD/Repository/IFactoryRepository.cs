@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace CRUD.Repository
 {
-    interface IFactoryRepository<T> where T : class
+    public interface IFactoryRepository<T> where T : class
     {
-        IEnumerable<T> GetAll();
-        string Get(int? id);
-        string Create(string item);
-        string Update(int id, string item);
-        bool Delete(int id);
+        Task<IEnumerable<T>> GetAll();
+        Task<T> Get(int? id);
+        Task<T> Create(T item);
+        Task<T> Update(int id, T item);
+        Task<bool> Delete(int id);
 
     }
 }
