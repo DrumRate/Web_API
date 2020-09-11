@@ -7,7 +7,7 @@ namespace CRUD.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Factory",
+                name: "Factories",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -17,11 +17,11 @@ namespace CRUD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Factory", x => x.Id);
+                    table.PrimaryKey("PK_Factories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tank",
+                name: "Tanks",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -33,11 +33,11 @@ namespace CRUD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tank", x => x.Id);
+                    table.PrimaryKey("PK_Tanks", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Unit",
+                name: "Units",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -47,20 +47,20 @@ namespace CRUD.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Unit", x => x.Id);
+                    table.PrimaryKey("PK_Units", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Factory");
+                name: "Factories");
 
             migrationBuilder.DropTable(
-                name: "Tank");
+                name: "Tanks");
 
             migrationBuilder.DropTable(
-                name: "Unit");
+                name: "Units");
         }
     }
 }

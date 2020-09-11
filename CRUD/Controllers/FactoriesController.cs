@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using CRUD.DTO;
 using CRUD.Models.FactoryDbContext;
 using CRUD.Repository;
+using CRUD.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -16,46 +19,58 @@ namespace CRUD.Controllers
     [ApiController]
     public class FactoriesController : ControllerBase
     {
-        readonly FactoryRepository factoryRepository;
-
-        public FactoriesController(FactoryDbContext context)
+        private readonly IFactoryRepository<Factory> _factoryRepository;
+        private readonly IMapper _mapper;
+        private FactoryValidator _validator = new FactoryValidator();
+        public FactoriesController(IFactoryRepository<Factory> repository, IMapper mapper)
         {
-            factoryRepository = new FactoryRepository(context);
+            _factoryRepository = repository;
+            _mapper = mapper;
         }
 
         // GET: api/<ValuesController>
         [HttpGet]
-        public IEnumerable<Factory> Get()
+        public async Task<IEnumerable<Factory>> GetAll()
         {
-            return factoryRepository.GetAll();
+ 
+            return await _factoryRepository.GetAll();
         }
 
         // GET api/<ValuesController>/5
         [HttpGet("read/{id}")]
-        public string Get(int id)
+        public async Task<Factory> Get(int? id)
         {
-            return factoryRepository.Get(id);
+            return await _factoryRepository.Get(id);
         }
 
         // POST api/<ValuesController>
         [HttpPost]
-        public string Post([FromBody] string stringFactory)
+        public async Task<ActionResult<FactoryDto>> Create(FactoryDto factoryDto)
         {
-            return factoryRepository.Create(stringFactory);
+            var factory = _mapper.Map<Factory>(factoryDto);
+            var validationRes = _validator.Validate(factory);
+            if (!validationRes.IsValid) 
+                return BadRequest(new { errors = validationRes.Errors });
+            var res = await _factoryRepository.Create(factory);
+            return CreatedAtAction(nameof(Get), new { Id = factory.Id }, factory);
         }
 
         // PUT api/<ValuesController>/5
         [HttpPut("{id}")]
-        public string Put(int id, [FromBody] string stringFactory)
+        public async Task<ActionResult> Put(int id, [FromBody] FactoryDto factory)
         {
-            return factoryRepository.Update(id, stringFactory);
+            var factoryUpdate = await _factoryRepository.Get(id);
+            if (factoryUpdate == null) return NotFound();
+            _mapper.Map(factory, factoryUpdate);
+            await _factoryRepository.Update(id, factoryUpdate);
+            return NoContent();
         }
 
         // DELETE api/<ValuesController>/5
         [HttpDelete("{id}")]
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            return factoryRepository.Delete(id);
+            return await _factoryRepository.Delete(id);
         }
     }
 }

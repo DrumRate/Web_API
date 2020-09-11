@@ -14,6 +14,8 @@ namespace CRUD
         [CustomDescription("ID завода")]
         public int FactoryId { get; set; }
         public Factory Factory { get; set; }
-
+        public Tank Tank { get; set; }
+        //[CustomDescription("Имеющиеся резервуары")]
+        //public List<Tank> Tanks { get; set; }
     }
 }

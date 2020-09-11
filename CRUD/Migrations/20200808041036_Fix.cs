@@ -8,11 +8,11 @@ namespace CRUD.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Desc",
-                table: "Factory");
+                table: "Factories");
 
             migrationBuilder.AddColumn<string>(
                 name: "Description",
-                table: "Factory",
+                table: "Factories",
                 nullable: true);
         }
 
@@ -20,11 +20,11 @@ namespace CRUD.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Description",
-                table: "Factory");
+                table: "Factories");
 
             migrationBuilder.AddColumn<string>(
                 name: "Desc",
-                table: "Factory",
+                table: "Factories",
                 type: "nvarchar(max)",
                 nullable: true);
         }
